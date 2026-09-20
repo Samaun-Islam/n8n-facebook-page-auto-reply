@@ -1,0 +1,274 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "fb-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "b822dd1d-7f2c-46dc-b214-9c8494a8cb19",
+      "name": "Webhook",
+      "webhookId": "5609ee85-02a8-4bb6-be89-47109389352d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5f27843b-2234-4351-9f48-ca6f5cf639a6",
+              "leftValue": "={{ $json.query.hub_mode }}",
+              "rightValue": "subscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "18a0bc43-bdc3-401a-bcbe-62a06d37d480",
+              "leftValue": "={{ $json.query.hub_verify_token }}",
+              "rightValue": "samaun5",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -112,
+        -32
+      ],
+      "id": "50f1817f-fd74-4eb7-b5f4-710cc48bc877",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query.hub_challenge }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        112,
+        -128
+      ],
+      "id": "3eb2280c-a0a0-4228-93b9-6887b1875558",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fb_webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -352,
+        160
+      ],
+      "id": "45452f84-6ad8-4380-8bfc-3c395d3fba5e",
+      "name": "Webhook1",
+      "webhookId": "faea0398-38a1-4d36-800f-ee22cabafc34"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7a18714d-e843-4177-805c-79d7c295f8fe",
+              "name": "sender",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}",
+              "type": "string"
+            },
+            {
+              "id": "15d050fc-c522-417f-b1af-176110a1ac2a",
+              "name": "receiver",
+              "value": "={{ $json.body.entry[0].messaging[0].recipient.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d1b3e5f2-3f7a-421d-be6d-ecaad6b90fae",
+              "name": "message",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -128,
+        160
+      ],
+      "id": "72a13b5b-33d3-438e-ad12-dd7f1ee87fd1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        96,
+        160
+      ],
+      "id": "d728884b-ccda-4d0c-8221-f9043b24151d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        368
+      ],
+      "id": "5c59d038-8772-4deb-b963-0d7ec496f1b5",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ri5VHnTeEdZEaO1a",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v26.0/{{ $('Edit Fields').item.json.receiver }}/messages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "EAAXzqspMebgBSu6ZBg3ZBwzUZAv0E6dtOMZBGuhYKbcrTklPiAKv8vDmRgqqsZB2ZCKW1yHNwnfxxqpaFMc2pTaZAHUw31WhL8SPJuMz5UCvvtMZAsF2h3nJRcO17nmngKjEAIFZCFTbspkYKprJWYFyTjZCZAIrj7M34sLZClRHLaYXKqV29e1WnZBLJ4giu8Rn1QPhKZAJNHUGZCNDgZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": {\n    \"id\": \"{{ $('Edit Fields').item.json.sender }}\"\n  },\n  \"messaging_type\": \"RESPONSE\",\n  \"message\": {\n    \"text\": {{ JSON.stringify($json.output) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        464,
+        160
+      ],
+      "id": "9f0d0b31-477d-4b5d-b17f-ffd2d2960fa9",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "cd2d031d-3a65-42e4-965d-5a9f108bdaf7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4f0cec515edd6f9c9b7f8e4ae399ea9340d53e366379c288d526ba741b2b83ed"
+  },
+  "nodeGroups": [],
+  "id": "LQCrnAO72as9gW9b",
+  "tags": []
+}
