@@ -70,4 +70,4 @@ in this repository.
 
 ## 👨‍💻 Author
 
-Your Name
+SAMAUN
