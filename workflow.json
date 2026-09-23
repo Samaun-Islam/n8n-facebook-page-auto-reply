@@ -39,7 +39,7 @@
             {
               "id": "18a0bc43-bdc3-401a-bcbe-62a06d37d480",
               "leftValue": "={{ $json.query.hub_verify_token }}",
-              "rightValue": "samaun5",
+              "rightValue": "your-token",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -170,7 +170,7 @@
           "parameters": [
             {
               "name": "access_token",
-              "value": "EAAXzqspMebgBSu6ZBg3ZBwzUZAv0E6dtOMZBGuhYKbcrTklPiAKv8vDmRgqqsZB2ZCKW1yHNwnfxxqpaFMc2pTaZAHUw31WhL8SPJuMz5UCvvtMZAsF2h3nJRcO17nmngKjEAIFZCFTbspkYKprJWYFyTjZCZAIrj7M34sLZClRHLaYXKqV29e1WnZBLJ4giu8Rn1QPhKZAJNHUGZCNDgZDZD"
+              "value": "YOUR_TOKEN"
             }
           ]
         },
